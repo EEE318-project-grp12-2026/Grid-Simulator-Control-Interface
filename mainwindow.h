@@ -17,6 +17,11 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_btn_ScanPorts_clicked();
+
+    void on_combo_SerPorts_currentTextChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
 };
