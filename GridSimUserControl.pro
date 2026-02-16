@@ -15,6 +15,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    DarkeumStyle.h \
     mainwindow.h
 
 FORMS += \
