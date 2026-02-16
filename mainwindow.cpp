@@ -93,7 +93,7 @@ void MainWindow::on_btn_line4disconn_clicked()
 {
     ui->btn_line_upgrade->setText("test");
 
-    //ui->listWidget->addItem("Disconnected BusBar B" + );
+    ui->listWidget->addItem("Disconnected BusBar B");
 }
 
 
