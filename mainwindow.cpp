@@ -103,6 +103,8 @@ void MainWindow::handleSerialData() {
 
     if(STAT_CON == __SER_STAT){
         //read data
+
+        __asm("nop");
         QByteArray data = usbserial->readLine(); //use readline to parse line by line. use AT CMD structure.
 
         // do some shit with the data - figure out what the  fuck it is and shove it into the gui somewhere
