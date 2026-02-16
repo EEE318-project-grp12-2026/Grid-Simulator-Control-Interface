@@ -1094,5 +1094,21 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>lcdNumber_5</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>862</x>
+     <y>181</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>786</x>
+     <y>174</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>

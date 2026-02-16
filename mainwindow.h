@@ -30,6 +30,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    QSerialPort *usbserial;
+    //QSerialPort *usbserial;
 };
 #endif // MAINWINDOW_H

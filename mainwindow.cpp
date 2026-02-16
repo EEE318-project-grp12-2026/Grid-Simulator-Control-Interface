@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QSerialPort>
 #include <QSerialPortInfo>
-//QSerialPort usbserial;
+QSerialPort usbserial;
 
 #define STAT_NOTCON 0
 #define STAT_CON    1
@@ -31,7 +31,7 @@ void MainWindow::on_btn_ScanPorts_clicked()
 
         // filter out unwanted ports that have nothing to do with USB or external ports. (LINUX)
 
-        if (port.portName().contains("USB") or
+        if (1 or port.portName().contains("USB") or
             port.portName().contains("ACM")){
 
             ui->combo_SerPorts->addItem(port.portName());
@@ -75,8 +75,8 @@ void MainWindow::on_combo_SerPorts_currentTextChanged(const QString &arg1)
     }
 
 
-    usbserial->setPortName(arg1);
-    usbserial->setBaudRate(QSerialPort::Baud115200);
+    usbserial.setPortName("tty");
+    usbserial.setBaudRate(QSerialPort::Baud115200);
     qDebug()<<"connected to: "<<arg1<<"\n";
     ui->lbl_connStat->setText("Connected to port: " + arg1);
 
@@ -93,7 +93,7 @@ void MainWindow::on_btn_line4disconn_clicked()
 {
     ui->btn_line_upgrade->setText("test");
 
-    ui->listWidget->addItem("news");
+    //ui->listWidget->addItem("Disconnected BusBar B" + );
 }
 
 
@@ -105,7 +105,7 @@ void MainWindow::handleSerialData() {
         //read data
 
         __asm("nop");
-        QByteArray data = usbserial->readLine(); //use readline to parse line by line. use AT CMD structure.
+        QByteArray data = usbserial.readLine(); //use readline to parse line by line. use AT CMD structure.
 
         // do some shit with the data - figure out what the  fuck it is and shove it into the gui somewhere
 
