@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1215</width>
-    <height>696</height>
+    <width>1208</width>
+    <height>683</height>
    </rect>
   </property>
   <property name="palette">
@@ -493,7 +493,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -548,6 +548,19 @@
        <string>Scan Ports</string>
       </property>
      </widget>
+     <widget class="QLabel" name="lbl_connStat">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>100</y>
+        <width>221</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>AWAITING CONNECTION</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
@@ -574,7 +587,7 @@
        <attribute name="title">
         <string>LINE 4</string>
        </attribute>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="btn_line_upgrade">
         <property name="geometry">
          <rect>
           <x>20</x>
@@ -587,7 +600,7 @@
          <string>Upgrade (£1500)</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="btn_line4disconn">
         <property name="geometry">
          <rect>
           <x>20</x>
@@ -1056,7 +1069,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1215</width>
+     <width>1208</width>
      <height>23</height>
     </rect>
    </property>

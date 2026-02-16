@@ -2,6 +2,12 @@
 #include "ui_mainwindow.h"
 #include <QSerialPort>
 #include <QSerialPortInfo>
+//QSerialPort usbserial;
+
+#define STAT_NOTCON 0
+#define STAT_CON    1
+#define STAT_ERR    2
+int __SER_STAT = STAT_NOTCON;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -62,13 +68,6 @@ void MainWindow::on_btn_ScanPorts_clicked()
 
 
 
-
-
-
-
-
-
-
 void MainWindow::on_combo_SerPorts_currentTextChanged(const QString &arg1)
 {
     if(arg1 == "s"){
@@ -76,5 +75,44 @@ void MainWindow::on_combo_SerPorts_currentTextChanged(const QString &arg1)
     }
 
 
+    usbserial->setPortName(arg1);
+    usbserial->setBaudRate(QSerialPort::Baud115200);
+    qDebug()<<"connected to: "<<arg1<<"\n";
+    ui->lbl_connStat->setText("Connected to port: " + arg1);
+
+    __SER_STAT = STAT_CON;
+
+
+\
+
+
 }
+
+
+void MainWindow::on_btn_line4disconn_clicked()
+{
+    ui->btn_line_upgrade->setText("test");
+
+    ui->listWidget->addItem("news");
+}
+
+
+
+
+void MainWindow::handleSerialData() {
+
+    if(STAT_CON == __SER_STAT){
+        //read data
+        QByteArray data = usbserial->readLine(); //use readline to parse line by line. use AT CMD structure.
+
+        // do some shit with the data - figure out what the  fuck it is and shove it into the gui somewhere
+
+    }
+
+}
+
+
+
+
+
 
