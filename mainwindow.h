@@ -36,6 +36,10 @@ private slots:
 
     void updateStatusLabel(const QString &text);
 
+    void onConnectionError(const QString &error);
+
+    void onDisconnected();
+
 
 
 
@@ -44,6 +48,8 @@ private:
 
 
     SerialHandler *m_serial;
+
+    bool m_isConnected = false;
 
     //QSerialPort *usbserial;
 };

@@ -21,6 +21,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
 
+    connect(m_serial, &SerialHandler::disconnected,
+            this, &MainWindow::onDisconnected);
+
+    connect(m_serial, &SerialHandler::connectionError,
+            this, &MainWindow::onConnectionError);
+
+
 
   //  qDebug() << "Signal/slot connected:" << connected;
 
@@ -84,7 +91,7 @@ void MainWindow::on_btn_ScanPorts_clicked()
 
 void MainWindow::on_combo_SerPorts_currentTextChanged(const QString &arg1)
 {
-    if(!arg1.isEmpty()){
+    if(!arg1.isEmpty() and !m_isConnected){
 
         m_serial->disconnect();
 
@@ -96,30 +103,14 @@ void MainWindow::on_combo_SerPorts_currentTextChanged(const QString &arg1)
 
 
         if (!m_serial->openPort(arg1, 115200)) {
-            qDebug() << "Failed to open serial port";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            qDebug() << "Failed to open serial port: ";
 
         __SER_STAT = STAT_CON;
 
+        }else{
+            m_isConnected = true;
 
-
-
-
-
-    }
+        }
 
 
 \
@@ -150,7 +141,12 @@ void MainWindow::on_btn_line4disconn_clicked()
 
 void MainWindow::on_pushButton_clicked()
 {
-    qDebug()<<usbserial.readLine();
+//    qDebug()<<usbserial.readLine();
+
+    m_serial->closePort();
+qDebug()<<"cloded port";
+
+    m_isConnected = false;
 
 }
 
@@ -171,3 +167,24 @@ void MainWindow::updateStatusLabel(const QString &text)
 }
 
 
+
+
+void MainWindow::onDisconnected()
+{
+
+    qDebug()<< "successful disconnect handler call";
+    m_isConnected = false;
+
+
+    // Clean up the data connection
+    disconnect(m_serial, &SerialHandler::dataReceived,
+               this, &MainWindow::updateStatusLabel);
+}
+
+
+void MainWindow::onConnectionError(const QString &error)
+{
+    qDebug()<<"disconnected";
+
+
+}

@@ -493,7 +493,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -564,14 +564,14 @@
      <widget class="QPushButton" name="pushButton">
       <property name="geometry">
        <rect>
-        <x>340</x>
-        <y>290</y>
-        <width>86</width>
-        <height>26</height>
+        <x>30</x>
+        <y>130</y>
+        <width>301</width>
+        <height>31</height>
        </rect>
       </property>
       <property name="text">
-       <string>debug thing</string>
+       <string>DISCONNECT (use if buggy)</string>
       </property>
      </widget>
     </widget>
@@ -1086,7 +1086,7 @@
      <x>0</x>
      <y>0</y>
      <width>1220</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
