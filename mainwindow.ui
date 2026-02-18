@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1208</width>
-    <height>683</height>
+    <width>1220</width>
+    <height>721</height>
    </rect>
   </property>
   <property name="palette">
@@ -488,7 +488,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>1201</width>
+      <width>1191</width>
       <height>641</height>
      </rect>
     </property>
@@ -559,6 +559,19 @@
       </property>
       <property name="text">
        <string>AWAITING CONNECTION</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>290</y>
+        <width>86</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>debug thing</string>
       </property>
      </widget>
     </widget>
@@ -904,6 +917,9 @@
         <height>21</height>
        </rect>
       </property>
+      <property name="maximum">
+       <number>100</number>
+      </property>
       <property name="orientation">
        <enum>Qt::Orientation::Horizontal</enum>
       </property>
@@ -1069,7 +1085,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1208</width>
+     <width>1220</width>
      <height>23</height>
     </rect>
    </property>

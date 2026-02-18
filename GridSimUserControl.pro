@@ -12,11 +12,13 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    serialhandler.cpp
 
 HEADERS += \
     DarkeumStyle.h \
-    mainwindow.h
+    mainwindow.h \
+    serialhandler.h
 
 FORMS += \
     mainwindow.ui

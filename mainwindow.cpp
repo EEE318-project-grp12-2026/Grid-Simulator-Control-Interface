@@ -2,6 +2,10 @@
 #include "ui_mainwindow.h"
 #include <QSerialPort>
 #include <QSerialPortInfo>
+
+
+
+#include "serialhandler.h"
 QSerialPort usbserial;
 
 #define STAT_NOTCON 0
@@ -12,11 +16,25 @@ int __SER_STAT = STAT_NOTCON;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , m_serial(new SerialHandler(this))
 {
     ui->setupUi(this);
 
-}
 
+
+
+    bool connected = connect(m_serial, &SerialHandler::lineReceived,
+                             this, &MainWindow::updateStatusLabel);
+    qDebug() << "Signal/slot connected:" << connected;
+
+    // Open the port
+    if (!m_serial->openPort("ttyACM0", 115200)) {
+        qDebug() << "Failed to open serial port";
+
+
+
+}
+}
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -31,7 +49,7 @@ void MainWindow::on_btn_ScanPorts_clicked()
 
         // filter out unwanted ports that have nothing to do with USB or external ports. (LINUX)
 
-        if (1 or port.portName().contains("USB") or
+        if (port.portName().contains("USB") or
             port.portName().contains("ACM")){
 
             ui->combo_SerPorts->addItem(port.portName());
@@ -70,17 +88,42 @@ void MainWindow::on_btn_ScanPorts_clicked()
 
 void MainWindow::on_combo_SerPorts_currentTextChanged(const QString &arg1)
 {
-    if(arg1 == "s"){
-        __asm("nop");
+    if(!arg1.isEmpty()){
+
+
+
+        usbserial.close();
+
+
+
+
+
+
+        usbserial.setPortName(arg1);
+        usbserial.setBaudRate(QSerialPort::Baud115200);
+        usbserial.setDataBits(QSerialPort::Data8);
+        usbserial.setParity(QSerialPort::NoParity);
+        usbserial.setStopBits(QSerialPort::OneStop);
+
+        //  usbserial.open(QIODevice::ReadWrite);
+
+
+        if (!usbserial.open(QIODevice::ReadWrite)) {
+            qDebug() << "Failed to open serial port:" << usbserial.errorString();
+            //return -1;
+        }
+
+        qDebug()<<"connected to: "<<arg1<<"\n";
+        ui->lbl_connStat->setText("Connected to port: " + arg1);
+
+        __SER_STAT = STAT_CON;
+
+
+
+
+
+
     }
-
-
-    usbserial.setPortName("tty");
-    usbserial.setBaudRate(QSerialPort::Baud115200);
-    qDebug()<<"connected to: "<<arg1<<"\n";
-    ui->lbl_connStat->setText("Connected to port: " + arg1);
-
-    __SER_STAT = STAT_CON;
 
 
 \
@@ -99,22 +142,31 @@ void MainWindow::on_btn_line4disconn_clicked()
 
 
 
-void MainWindow::handleSerialData() {
 
-    if(STAT_CON == __SER_STAT){
-        //read data
 
-        __asm("nop");
-        QByteArray data = usbserial.readLine(); //use readline to parse line by line. use AT CMD structure.
 
-        // do some shit with the data - figure out what the  fuck it is and shove it into the gui somewhere
 
-    }
+
+
+
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    qDebug()<<usbserial.readLine();
 
 }
 
 
 
+void MainWindow::updateStatusLabel(const QString &text)
+{
+    //ui->statusLabel->setText("Received: " + text);
+    // Any UI element: ui->lineEdit, ui->textEdit, ui->progressBar, etc.
 
+    qDebug()<<"this other fucking bit is running";
+
+    qDebug()<<text<<"\n";
+}
 
 

@@ -1,34 +1,47 @@
-#include <QSerialPort>
-#include <QObject>
+#include "serialhandler.h"
 #include <QDebug>
+//#include "mainwindow.h"
 
-class SerialHandler : public QObject {
-    Q_OBJECT
-public:
-    SerialHandler(QObject *parent = nullptr) : QObject(parent) {
-        serial = new QSerialPort(this);
-        serial->setPortName("COM3");  // or /dev/ttyUSB0 on Linux
-        serial->setBaudRate(QSerialPort::Baud9600);
+SerialHandler::SerialHandler(QObject *parent)
+    : QObject(parent)
+    , m_serial(new QSerialPort(this))
+{
+    // Connect the "button press" equivalent for serial data
+    connect(m_serial, &QSerialPort::readyRead,
+            this, &SerialHandler::handleIncomingData);
 
-        // This is the key connection - like button->clicked
-        connect(serial, &QSerialPort::readyRead,
-                this, &SerialHandler::handleIncomingData);
 
-        serial->open(QIODevice::ReadWrite);
-    }
 
-private slots:
-    void handleIncomingData() {
-        QByteArray data = serial->readAll();
-        // Execute your code here - runs automatically when data arrives
-        processData(data);
-    }
+    connect(m_serial, &QSerialPort::errorOccurred,
+            this, &SerialHandler::handleError);
+}
 
-private:
-    QSerialPort *serial;
+SerialHandler::~SerialHandler()
+{
+    if (m_serial->isOpen())
+        m_serial->close();
+}
 
-    void processData(const QByteArray &data) {
-        qDebug() << "Received:" << data;
-        // Your application logic here
-    }
-};
+bool SerialHandler::openPort(const QString &name, int baudRate)
+{
+    m_serial->setPortName(name);
+    m_serial->setBaudRate(baudRate);
+    return m_serial->open(QIODevice::ReadWrite);
+}
+
+void __attribute__((weak)) SerialHandler::handleIncomingData()
+{
+
+    QByteArray data = m_serial->readAll();
+    qDebug() << "Data arrived:" << data;
+    emit dataReceived(QString(data));
+
+
+
+}
+
+void SerialHandler::handleError(QSerialPort::SerialPortError error)
+{
+    if (error != QSerialPort::NoError)
+        qDebug() << "Serial error:" << m_serial->errorString();
+}
