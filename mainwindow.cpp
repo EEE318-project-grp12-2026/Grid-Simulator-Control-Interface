@@ -24,16 +24,12 @@ MainWindow::MainWindow(QWidget *parent)
 
   //  qDebug() << "Signal/slot connected:" << connected;
 
-    connect(m_serial, &SerialHandler::dataReceived,
-            this, &MainWindow::updateStatusLabel);
+
 
     // Open the port
-    if (!m_serial->openPort("ttyACM0", 115200)) {
-        qDebug() << "Failed to open serial port";
-
-
-
-}
+   // if (!m_serial->openPort("ttyACM0", 115200)) {
+     //   qDebug() << "Failed to open serial port";
+//}
 }
 MainWindow::~MainWindow()
 {
@@ -90,31 +86,31 @@ void MainWindow::on_combo_SerPorts_currentTextChanged(const QString &arg1)
 {
     if(!arg1.isEmpty()){
 
+        m_serial->disconnect();
 
 
-        usbserial.close();
+        connect(m_serial, &SerialHandler::dataReceived,
+                this, &MainWindow::updateStatusLabel);
+
+
+
+
+        if (!m_serial->openPort(arg1, 115200)) {
+            qDebug() << "Failed to open serial port";
 
 
 
 
 
 
-        usbserial.setPortName(arg1);
-        usbserial.setBaudRate(QSerialPort::Baud115200);
-        usbserial.setDataBits(QSerialPort::Data8);
-        usbserial.setParity(QSerialPort::NoParity);
-        usbserial.setStopBits(QSerialPort::OneStop);
-
-        //  usbserial.open(QIODevice::ReadWrite);
 
 
-        if (!usbserial.open(QIODevice::ReadWrite)) {
-            qDebug() << "Failed to open serial port:" << usbserial.errorString();
-            //return -1;
-        }
 
-        qDebug()<<"connected to: "<<arg1<<"\n";
-        ui->lbl_connStat->setText("Connected to port: " + arg1);
+
+
+
+
+
 
         __SER_STAT = STAT_CON;
 
@@ -131,6 +127,7 @@ void MainWindow::on_combo_SerPorts_currentTextChanged(const QString &arg1)
 
 }
 
+}
 
 void MainWindow::on_btn_line4disconn_clicked()
 {
@@ -168,6 +165,7 @@ void MainWindow::updateStatusLabel(const QString &text)
 
 
     ui->listWidget->addItem(text);
+    ui->listWidget->scrollToBottom();
 
     qDebug()<<text<<"\n";
 }
