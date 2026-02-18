@@ -22,10 +22,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
+  //  qDebug() << "Signal/slot connected:" << connected;
 
-    bool connected = connect(m_serial, &SerialHandler::lineReceived,
-                             this, &MainWindow::updateStatusLabel);
-    qDebug() << "Signal/slot connected:" << connected;
+    connect(m_serial, &SerialHandler::dataReceived,
+            this, &MainWindow::updateStatusLabel);
 
     // Open the port
     if (!m_serial->openPort("ttyACM0", 115200)) {
@@ -165,6 +165,9 @@ void MainWindow::updateStatusLabel(const QString &text)
     // Any UI element: ui->lineEdit, ui->textEdit, ui->progressBar, etc.
 
     qDebug()<<"this other fucking bit is running";
+
+
+    ui->listWidget->addItem(text);
 
     qDebug()<<text<<"\n";
 }
