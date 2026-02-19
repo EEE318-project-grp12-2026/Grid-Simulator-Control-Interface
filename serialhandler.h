@@ -11,12 +11,16 @@ public:
     explicit SerialHandler(QObject *parent = nullptr);
     bool openPort(const QString &name, int baudRate);
     void closePort();
-    bool isOpen() const;
+
+    // Send methods
+    bool sendLine(const QString &text);      // Adds \n automatically
+    bool sendData(const QByteArray &data); // Raw bytes
+    bool sendString(const QString &text);  // No newline added
 
 signals:
-    void dataReceived(const QString &text);
-    void disconnected();           // ← New: device unplugged
-    void connectionError(const QString &error);  // ← New: other errors
+    void lineReceived(const QString &line);
+    void disconnected();
+    void connectionError(const QString &error);
 
 private slots:
     void handleIncomingData();
@@ -24,6 +28,7 @@ private slots:
 
 private:
     QSerialPort *m_serial;
+    QByteArray m_buffer;
 };
 
 #endif

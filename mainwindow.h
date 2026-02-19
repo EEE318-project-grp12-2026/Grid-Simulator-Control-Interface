@@ -43,6 +43,8 @@ private slots:
 
 
 
+    void on_btnConnectSerial_clicked();
+
 private:
     Ui::MainWindow *ui;
 

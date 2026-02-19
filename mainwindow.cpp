@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QMessageBox>
 
 
 
@@ -45,10 +46,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_btn_ScanPorts_clicked()
 {
+
+    bool PortsAvailable = false;
     ui->combo_SerPorts->clear();
-    Q_FOREACH(QSerialPortInfo port, QSerialPortInfo::availablePorts()){
 
 #ifdef Q_OS_LINUX
+    QString errMsg = "Check that the device is connected and make sure the application and user has the correct permissions";
+
+
+    Q_FOREACH(QSerialPortInfo port, QSerialPortInfo::availablePorts()){
+
 
         // filter out unwanted ports that have nothing to do with USB or external ports. (LINUX)
 
@@ -57,9 +64,16 @@ void MainWindow::on_btn_ScanPorts_clicked()
 
             ui->combo_SerPorts->addItem(port.portName());
 
+            PortsAvailable = true;
+
         }
 
 #elif  defined(Q_OS_WIN)
+
+    Q_FOREACH(QSerialPortInfo port, QSerialPortInfo::availablePorts()){
+
+        QString errMsg = "Check that the device is plugged in";
+
 
         // filter out unwanted ports that have nothing to do with USB or external ports. (WINDOWS)
 
@@ -83,6 +97,10 @@ void MainWindow::on_btn_ScanPorts_clicked()
 
     }
 
+    if(!PortsAvailable){
+        QMessageBox::warning(this, "No Devices Found", errMsg, "ok");
+    }
+
 
 }
 
@@ -91,32 +109,7 @@ void MainWindow::on_btn_ScanPorts_clicked()
 
 void MainWindow::on_combo_SerPorts_currentTextChanged(const QString &arg1)
 {
-    if(!arg1.isEmpty() and !m_isConnected){
-
-        m_serial->disconnect();
-
-
-        connect(m_serial, &SerialHandler::dataReceived,
-                this, &MainWindow::updateStatusLabel);
-
-
-
-
-        if (!m_serial->openPort(arg1, 115200)) {
-            qDebug() << "Failed to open serial port: ";
-
-        __SER_STAT = STAT_CON;
-
-        }else{
-            m_isConnected = true;
-
-        }
-
-
-\
-
-
-}
+    __asm("nop");
 
 }
 
@@ -143,25 +136,27 @@ void MainWindow::on_pushButton_clicked()
 {
 //    qDebug()<<usbserial.readLine();
 
-    m_serial->closePort();
-qDebug()<<"cloded port";
 
-    m_isConnected = false;
+m_serial->sendLine("c");
+
+
+
 
 }
 
 
-
+// ON DATA RECIEVED VIA SERIAL - NEWLINES ONLY
 void MainWindow::updateStatusLabel(const QString &text)
 {
     //ui->statusLabel->setText("Received: " + text);
     // Any UI element: ui->lineEdit, ui->textEdit, ui->progressBar, etc.
 
-    qDebug()<<"this other fucking bit is running";
 
 
-    ui->listWidget->addItem(text);
+
+    ui->listWidget->addItem("DATA REDIEVED: " + text);
     ui->listWidget->scrollToBottom();
+
 
     qDebug()<<text<<"\n";
 }
@@ -177,7 +172,7 @@ void MainWindow::onDisconnected()
 
 
     // Clean up the data connection
-    disconnect(m_serial, &SerialHandler::dataReceived,
+    disconnect(m_serial, &SerialHandler::lineReceived,
                this, &MainWindow::updateStatusLabel);
 }
 
@@ -188,3 +183,53 @@ void MainWindow::onConnectionError(const QString &error)
 
 
 }
+
+void MainWindow::on_btnConnectSerial_clicked()
+{
+    QString arg1 = ui->combo_SerPorts->currentText();
+
+    if(!arg1.isEmpty() and !m_isConnected){
+
+        m_serial->disconnect();
+
+
+        connect(m_serial, &SerialHandler::lineReceived,
+                this, &MainWindow::updateStatusLabel);
+
+
+
+
+        if (!m_serial->openPort(arg1, 115200)) {
+            qDebug() << "Failed to open serial port: ";
+
+            __SER_STAT = STAT_ERR;
+
+        }else{
+            m_isConnected = true;
+            ui->btnConnectSerial->setText("Disconnect Serial");
+
+            this->setWindowTitle("Connected to a serial device");
+
+
+        }
+
+
+\
+
+
+    }else if(m_isConnected){
+
+
+        m_serial->closePort();
+        qDebug()<<"cloded port";
+
+        m_isConnected = false;
+        ui->btnConnectSerial->setText("Connect Serial");
+
+         this->setWindowTitle("Device Disconnected");
+    }else if (arg1.isEmpty()){
+
+        QMessageBox::warning(this, "Warning", "There is no devices known. Search for a Device using the Scan Ports button", "OK");
+    }
+}
+
