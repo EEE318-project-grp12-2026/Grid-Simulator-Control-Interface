@@ -34,7 +34,7 @@ private slots:
     void on_pushButton_clicked();
 
 
-    void updateStatusLabel(const QString &text);
+    void onSerialDataSignalRecieved(const QString &text);
 
     void onConnectionError(const QString &error);
 

@@ -144,9 +144,9 @@ m_serial->sendLine("c");
 
 }
 
-
+bool OVERFLOW_DEBUG = false;
 // ON DATA RECIEVED VIA SERIAL - NEWLINES ONLY
-void MainWindow::updateStatusLabel(const QString &text)
+void MainWindow::onSerialDataSignalRecieved(const QString &text)
 {
     //ui->statusLabel->setText("Received: " + text);
     // Any UI element: ui->lineEdit, ui->textEdit, ui->progressBar, etc.
@@ -155,8 +155,22 @@ void MainWindow::updateStatusLabel(const QString &text)
 
 
     ui->listWidget->addItem("DATA REDIEVED: " + text);
-    ui->listWidget->scrollToBottom();
 
+
+    if(ui->listWidget->count() > 200){
+
+        ui->listWidget->takeItem(0);
+
+        qDebug()<<"Limit Reached. DEL 1st item";
+       // OVERFLOW_DEBUG = true;
+
+        if (!OVERFLOW_DEBUG){
+
+            OVERFLOW_DEBUG = true;
+            ui->lblOVERFLOW->setText("LIMIT REACHED! DATA OVERFLOW!");
+        }
+    }
+    ui->listWidget->scrollToBottom();
 
     qDebug()<<text<<"\n";
 }
@@ -173,13 +187,13 @@ void MainWindow::onDisconnected()
 
     // Clean up the data connection
     disconnect(m_serial, &SerialHandler::lineReceived,
-               this, &MainWindow::updateStatusLabel);
+               this, &MainWindow::onSerialDataSignalRecieved);
 }
 
 
 void MainWindow::onConnectionError(const QString &error)
 {
-    qDebug()<<"disconnected";
+    qDebug()<<"disconnected: " + error;
 
 
 }
@@ -194,13 +208,35 @@ void MainWindow::on_btnConnectSerial_clicked()
 
 
         connect(m_serial, &SerialHandler::lineReceived,
-                this, &MainWindow::updateStatusLabel);
+                this, &MainWindow::onSerialDataSignalRecieved);
 
 
 
 
         if (!m_serial->openPort(arg1, 115200)) {
             qDebug() << "Failed to open serial port: ";
+            // user likely has disconnected the device. tell them
+
+            ui->combo_SerPorts->clear();
+            if (1 ==QMessageBox::critical(this, "Serial Fault!", "Have you disconnected the device?",  "yes", "no")){
+
+                QMessageBox::critical(this, "RESOURCE BUSY!",
+                                      "Resource used by another application. if there is no other applications using serial, you should reboot your PC. ",
+                                      "OK");
+
+            }else{
+
+                if(QMessageBox::information(this, "Reconnect the device",
+                                             "The device should be plugged in again. use the\"scan ports\" button to search for devices again",
+                                             "ok")){
+
+
+                }
+            }
+
+
+
+
 
             __SER_STAT = STAT_ERR;
 
@@ -214,7 +250,6 @@ void MainWindow::on_btnConnectSerial_clicked()
         }
 
 
-\
 
 
     }else if(m_isConnected){
@@ -229,7 +264,8 @@ void MainWindow::on_btnConnectSerial_clicked()
          this->setWindowTitle("Device Disconnected");
     }else if (arg1.isEmpty()){
 
-        QMessageBox::warning(this, "Warning", "There is no devices known. Search for a Device using the Scan Ports button", "OK");
+        QMessageBox::warning(this, "Warning",
+                             "There is no devices known. Search for a Device using the Scan Ports button", "OK");
     }
 }
 

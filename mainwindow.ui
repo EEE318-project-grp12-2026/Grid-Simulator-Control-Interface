@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1220</width>
-    <height>721</height>
+    <height>698</height>
    </rect>
   </property>
   <property name="palette">
@@ -1110,6 +1110,19 @@
        <string>RAW SERIAL &amp; DEBUG</string>
       </property>
      </widget>
+     <widget class="QLabel" name="lblOVERFLOW">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>320</y>
+        <width>201</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
@@ -1560,7 +1573,7 @@
      <x>0</x>
      <y>0</y>
      <width>1220</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
