@@ -1,4 +1,4 @@
-# "power for all" Conttol interface. 
+# "power for all" Control interface. 
 
 
 See WIN_X64_BUILD_x.zip for the windows software
