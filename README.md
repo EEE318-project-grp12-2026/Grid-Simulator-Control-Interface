@@ -1,142 +1,211 @@
-# GridSimUserControl
+/*
+ * MCXN947 (FRDM-MCXN947) demo:
+ *  - Read potentiometer via LPADC (12-bit)
+ *  - Print ADC + duty over serial (PRINTF via Debug Console)
+ *  - Use ADC to set FlexPWM duty (motor speed control via external transistor/MOSFET driver)
+ *
+ * What you MUST configure in Pins/Clocks (MCUXpresso Config Tools):
+ *  1) The ADC input pin -> set to analog, routed to the LPADC channel you choose.
+ *  2) A FlexPWM output pin (e.g. PWM1_A0 / PWM1_A1 / etc.) -> pin mux to PWM function.
+ *  3) Debug console UART (or USB-CDC if your project uses that) for PRINTF().
+ *
+ * Build notes:
+ *  - Uses: fsl_lpadc.h and fsl_pwm.h and fsl_debug_console.h
+ *  - Assumes 12-bit ADC (0..4095). If you configure different resolution, update ADC_MAX_COUNTS.
+ */
 
-Qt application for the power-grid simulation game. Communicates with the
-NXP MCU over serial to read switch/generator state and drive the LEDs and
-display.
+#include <stdint.h>
+#include <stdbool.h>
 
-## Build
+#include "fsl_debug_console.h"
+#include "board.h"
+#include "clock_config.h"
+#include "pin_mux.h"
 
-Requires Qt 5.15+ or Qt 6 with the SerialPort module.
+#include "fsl_lpadc.h"
+#include "fsl_pwm.h"
 
-```bash
-qmake GridSimUserControl.pro
-make
-```
+/* ===================== USER SETTINGS ===================== */
 
-Or open `GridSimUserControl.pro` in Qt Creator.
+/* ---- ADC ----
+ * Set these to match YOUR analog pin/channel in the Pins tool.
+ * On MCX N, the LPADC driver typically uses ADC0/ADC1 as bases.
+ */
+#define ADC_BASE            ADC0
+#define ADC_CHANNEL_NUMBER  0U            /* <-- CHANGE: LPADC channel number for your pot pin */
+#define ADC_CMD_ID          1U
+#define ADC_TRIG_ID         0U
+#define ADC_MAX_COUNTS      4095U         /* 12-bit */
 
-On Debian/Ubuntu the dev packages are:
-```
-sudo apt install qtbase5-dev libqt5serialport5-dev qttools5-dev-tools
-```
+/* ---- PWM (FlexPWM) ----
+ * Choose PWM instance + submodule + A/B output that matches your pin mux.
+ * Example: PWM1 submodule 0, output A.
+ */
+#define PWM_BASE            PWM1
+#define PWM_SUBMODULE       kPWM_Module_0 /* <-- CHANGE if needed */
+#define PWM_OUTPUT_CHANNEL  kPWM_PwmA     /* kPWM_PwmA or kPWM_PwmB */
+#define PWM_ALIGN_MODE      kPWM_EdgeAligned
 
-## Architecture overview
+#define PWM_FREQ_HZ         10000U        /* 10 kHz is a good motor PWM starting point */
+#define PWM_SRC_CLK_HZ      CLOCK_GetFreq(kCLOCK_BusClk)
 
-```
-                ┌────────────────────────────────────┐
-                │  Qt Application (this project)     │
-                │                                    │
-   ┌─────────┐  │   ┌─────────────────────────┐      │
-   │  User   │──┼──▶│  MainWindow (UI + ctrl) │      │
-   └─────────┘  │   └────────┬────────────────┘      │
-                │            │                       │
-                │   ┌────────▼─────────┐             │
-                │   │ Grid evaluator   │ 10 Hz tick  │
-                │   │ (evaluateGrid)   │             │
-                │   └────────┬─────────┘             │
-                │            │                       │
-                │   ┌────────▼─────────┐             │
-                │   │ SerialHandler    │             │
-                │   │ (queue + framer) │             │
-                │   └────────┬─────────┘             │
-                └────────────┼───────────────────────┘
-                             │ UART 115200
-                             ▼
-                ┌────────────────────────────────────┐
-                │  NXP MCU                           │
-                │  - reads pots (Solar/Wind/Coal/Gas)│
-                │  - reads switches sw1..sw7         │
-                │  - drives 6 LEDs on lines          │
-                │  - drives 7-seg POINTS / SIM YEAR  │
-                └────────────────────────────────────┘
-```
+/* For easy scaling, we choose a fixed "period counts" value used ONLY for math.
+ * FlexPWM period is actually set by PWM_SetupPwm() based on PWM_FREQ_HZ + PWM_SRC_CLK_HZ,
+ * so we update duty by percent (0..100).
+ */
+#define SERIAL_PRINT_EVERY_N  10U         /* reduce spam: print once every N samples */
 
-The 100 ms tick is the heartbeat. Every tick the Qt app:
+/* ===================== FORWARD DECLARATIONS ===================== */
+static void     APP_InitAdc(void);
+static uint16_t APP_ReadAdcBlocking(void);
 
-1. Recomputes every line's demand and supply from the player's slider
-   inputs, the current bus topology, and the simulated year.
-2. Updates the on-screen transmission table.
-3. Pushes any LED state changes to the MCU as `cL<line><state>x`.
-4. Every second, pushes year and score (`cYxxxxx`, `cSxxxxx`).
+static void     APP_InitPwm(void);
+static void     APP_SetPwmDutyPercent(uint8_t dutyPercent);
 
-## MCU protocol
+static uint8_t  APP_MapAdcToDutyPercent(uint16_t adcRaw);
 
-### Commands sent to MCU (Qt → MCU)
+/* ===================== MAIN ===================== */
 
-| Command   | Meaning                           |
-|-----------|-----------------------------------|
-| `cL61x`   | LED 6 ON                          |
-| `cL60x`   | LED 6 OFF                         |
-| `cY2028x` | Set displayed year to 2028        |
-| `cS4750x` | Set displayed score to 4750       |
+int main(void)
+{
+    BOARD_InitBootPins();
+    BOARD_InitBootClocks();
+    BOARD_InitDebugConsole();
 
-`c` = start, `x` = terminate.
+    PRINTF("\r\nMCXN947 ADC->Serial->PWM demo starting...\r\n");
 
-### Telemetry from MCU (MCU → Qt)
+    APP_InitAdc();
+    APP_InitPwm();
 
-Comma-separated `name=value` pairs, terminated with `\n`:
+    uint32_t sampleCount = 0;
 
-```
-SUN=60,WIND=45,COAL=80,GAS=70,sw1=1,sw2=1,sw3=0,sw4=1,sw5=1,sw6=1,sw7=0
-SOLAR_COST=12,WIND_COST=8,COAL_COST=20,GAS_COST=18
-```
+    while (1)
+    {
+        uint16_t adc = APP_ReadAdcBlocking();
+        uint8_t duty = APP_MapAdcToDutyPercent(adc);
 
-| Name(s)                       | Meaning                          |
-|-------------------------------|----------------------------------|
-| `SUN`, `SOLAR`                | Solar generation capacity (0-100)|
-| `WIND`                        | Wind generation capacity         |
-| `COAL`                        | Coal generation capacity         |
-| `GAS`, `NUCLEAR`              | Gas generation capacity          |
-| `*_COST`                      | Cost per unit energy             |
-| `sw1`..`sw6`                  | Line switch states (0/1)         |
-| `sw7`                         | Tie switch between bus bars      |
-| `LINE<n>_DEMAND`              | Optional demand override         |
-| `LINE<n>_SUPPLY`              | Optional supply override         |
+        APP_SetPwmDutyPercent(duty);
 
-## Grid simulation maths
+        /* Serial output (view in a terminal at your debug console settings, commonly 115200 8N1) */
+        if ((sampleCount++ % SERIAL_PRINT_EVERY_N) == 0U)
+        {
+            PRINTF("ADC=%u, Duty=%u%%\r\n", adc, duty);
+        }
 
-### Bus power resolution
+        /* Simple delay to keep loop reasonable (replace with SDK_DelayAtLeastUs if you prefer) */
+        for (volatile uint32_t i = 0; i < 100000U; i++) { __NOP(); }
+    }
+}
 
-```
-busOnePower = min(sunUse,  solarPower) + min(windUse, windPower)
-busTwoPower = min(coalUse, coalPower)  + min(gasUse,  gasPower)
+/* ===================== ADC (LPADC) ===================== */
 
-if (tieSwitchOn):
-    combined    = busOnePower + busTwoPower
-    busOnePower = combined
-    busTwoPower = combined
-```
+static void APP_InitAdc(void)
+{
+    lpadc_config_t adcConfig;
+    LPADC_GetDefaultConfig(&adcConfig);
 
-### Per-line evaluation
+    /* If you want, you can tweak:
+     * adcConfig.enableAnalogPreliminary = true/false (depends on SDK)
+     * adcConfig.powerLevelMode = ...
+     */
 
-```
-yearFactor      = 1 + 0.05 × (simYear − 2024)             (5% growth/year)
-levelReduction  = 1 − 0.15 × lineLevel  (clamped to ≥ 0.4)
-demand          = BASE_DEMAND[i] × yearFactor × levelReduction
-supplied        = switchOn ? min(demand, busPower / activeLines) : 0
-ledOn           = switchOn AND (supplied >= demand) AND (demand > 0)
-```
+    LPADC_Init(ADC_BASE, &adcConfig);
 
-`BASE_DEMAND` is `{20, 25, 30, 35, 25, 20}` per line — tune to taste.
+    /* Some SDKs provide auto-calibration. If your SDK has it, uncomment:
+     * LPADC_DoAutoCalibration(ADC_BASE);
+     */
 
-### Score increment (1 Hz, in updateScoreOverTime)
+    /* Command: chooses channel + sampling mode, averaging, etc. */
+    lpadc_conv_command_config_t cmdConfig;
+    LPADC_GetDefaultConvCommandConfig(&cmdConfig);
+    cmdConfig.channelNumber = ADC_CHANNEL_NUMBER;
+    cmdConfig.sampleChannelMode = kLPADC_SampleChannelSingleEndSideA; /* typical single-ended */
+    LPADC_SetConvCommandConfig(ADC_BASE, ADC_CMD_ID, &cmdConfig);
 
-```
-demandPercent    = totalSupplied / totalDemand × 100
-renewablePercent = (sunUse + windUse) / totalUsed × 100
-increment        = demandPercent/10 + renewablePercent/10
-```
+    /* Trigger: software trigger -> our command */
+    lpadc_conv_trigger_config_t trigConfig;
+    LPADC_GetDefaultConvTriggerConfig(&trigConfig);
+    trigConfig.targetCommandId       = ADC_CMD_ID;
+    trigConfig.enableHardwareTrigger = false;
+    LPADC_SetConvTriggerConfig(ADC_BASE, ADC_TRIG_ID, &trigConfig);
 
-## Tuning knobs
+    PRINTF("ADC init done (channel %u).\r\n", (unsigned)ADC_CHANNEL_NUMBER);
+}
 
-In `mainwindow.h`:
+static uint16_t APP_ReadAdcBlocking(void)
+{
+    lpadc_conv_result_t result;
 
-- `BASE_DEMAND[6]`        — base load per line in % of bus capacity
-- `TICK_INTERVAL_MS`      — system tick period (default 100 ms)
-- `TICKS_PER_SIM_YEAR`    — how many ticks = one sim year (default 100 = 10 s)
-- `MCU_STATUS_INTERVAL`   — how often to push year/score (default 10 ticks = 1 s)
+    /* Start conversion using software trigger ID */
+    LPADC_DoSoftwareTrigger(ADC_BASE, (1U << ADC_TRIG_ID));
 
-In `evaluateGrid()`:
+    /* Wait for result */
+    while (!LPADC_GetConvResult(ADC_BASE, &result))
+    {
+        /* spin */
+    }
 
-- The `0.05` factor in `yearFactor` controls demand growth rate.
-- The `0.15` factor in `levelReduction` controls how much each upgrade helps.
+    return (uint16_t)result.convValue;
+}
+
+/* ===================== PWM (FlexPWM via fsl_pwm.h) ===================== */
+
+static void APP_InitPwm(void)
+{
+    pwm_config_t pwmConfig;
+    PWM_GetDefaultConfig(&pwmConfig);
+
+    /* Init PWM module */
+    PWM_Init(PWM_BASE, &pwmConfig);
+
+    /* Configure one output signal (A or B on chosen submodule) */
+    pwm_signal_param_t pwmSignal;
+    pwmSignal.pwmChannel       = PWM_OUTPUT_CHANNEL;
+    pwmSignal.level            = kPWM_HighTrue;
+    pwmSignal.dutyCyclePercent = 0U;              /* start stopped */
+    pwmSignal.deadtimeValue    = 0U;
+    pwmSignal.faultState       = kPWM_PwmFaultState0;
+    pwmSignal.pwmchannelenable = true;
+
+    PWM_SetupPwm(PWM_BASE,
+                 PWM_SUBMODULE,
+                 &pwmSignal,
+                 1U,
+                 PWM_ALIGN_MODE,
+                 PWM_FREQ_HZ,
+                 PWM_SRC_CLK_HZ);
+
+    /* Load registers then start */
+    PWM_SetPwmLdok(PWM_BASE, (1U << (uint8_t)PWM_SUBMODULE), true);
+    PWM_StartTimer(PWM_BASE, (1U << (uint8_t)PWM_SUBMODULE));
+
+    PRINTF("PWM init done (%u Hz).\r\n", (unsigned)PWM_FREQ_HZ);
+}
+
+static void APP_SetPwmDutyPercent(uint8_t dutyPercent)
+{
+    if (dutyPercent > 100U) dutyPercent = 100U;
+
+    PWM_UpdatePwmDutycycle(PWM_BASE,
+                           PWM_SUBMODULE,
+                           PWM_OUTPUT_CHANNEL,
+                           PWM_ALIGN_MODE,
+                           dutyPercent);
+
+    /* Ensure the updated duty loads */
+    PWM_SetPwmLdok(PWM_BASE, (1U << (uint8_t)PWM_SUBMODULE), true);
+}
+
+/* ===================== Mapping ===================== */
+
+static uint8_t APP_MapAdcToDutyPercent(uint16_t adcRaw)
+{
+    /* Clamp in case of unexpected values */
+    if (adcRaw > ADC_MAX_COUNTS) adcRaw = ADC_MAX_COUNTS;
+
+    /* duty% = adcRaw / ADC_MAX * 100 (with rounding) */
+    uint32_t duty = ((uint32_t)adcRaw * 100U + (ADC_MAX_COUNTS / 2U)) / ADC_MAX_COUNTS;
+    if (duty > 100U) duty = 100U;
+
+    return (uint8_t)duty;
+}
