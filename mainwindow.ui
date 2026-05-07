@@ -486,7 +486,7 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>20</x>
       <y>10</y>
       <width>1191</width>
       <height>641</height>
@@ -499,11 +499,11 @@
      <enum>QTabWidget::TabShape::Triangular</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
-      <string>Tab 1</string>
+      <string>Connect and start</string>
      </attribute>
      <widget class="QComboBox" name="combo_SerPorts">
       <property name="geometry">
@@ -565,19 +565,6 @@
       </property>
       <property name="text">
        <string>AWAITING CONNECTION</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton">
-      <property name="geometry">
-       <rect>
-        <x>860</x>
-        <y>530</y>
-        <width>301</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>DEBUG BUTTON PRESS TO DO SHIT</string>
       </property>
      </widget>
      <widget class="QPushButton" name="btnConnectSerial">
@@ -1062,19 +1049,6 @@
        <string>Connect Serial</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="btnIDENTIFY_SERIAL">
-      <property name="geometry">
-       <rect>
-        <x>190</x>
-        <y>100</y>
-        <width>151</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>IDENTIFY</string>
-      </property>
-     </widget>
      <widget class="QListWidget" name="listWidget">
       <property name="geometry">
        <rect>
@@ -1123,89 +1097,458 @@
        <string/>
       </property>
      </widget>
+     <widget class="QGroupBox" name="ChoosePlayers">
+      <property name="geometry">
+       <rect>
+        <x>590</x>
+        <y>30</y>
+        <width>541</width>
+        <height>201</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Choose Players </string>
+      </property>
+      <widget class="QRadioButton" name="radioPlayer1">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>140</y>
+         <width>112</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Player 1</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioPlayer2">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>80</y>
+         <width>112</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>2 player mode</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_24">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>40</y>
+         <width>141</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Select Gamemode</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btnStartgame">
+       <property name="geometry">
+        <rect>
+         <x>210</x>
+         <y>130</y>
+         <width>111</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Start Game</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="SomeButtonDebug">
+      <property name="geometry">
+       <rect>
+        <x>930</x>
+        <y>0</y>
+        <width>251</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>LIGHT LINE 6- TESTING ONLY!</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
-      <string>Tab 2</string>
+      <string>Game TAB </string>
      </attribute>
-     <widget class="QTabWidget" name="tabWidget_2">
+     <widget class="QTabWidget" name="Lineupgrade">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>0</x>
         <y>270</y>
         <width>771</width>
         <height>321</height>
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
+      <widget class="QWidget" name="status">
+       <attribute name="title">
+        <string>LINE STATUS</string>
+       </attribute>
+       <widget class="QTableWidget" name="table_transmissionLines">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>30</y>
+          <width>751</width>
+          <height>221</height>
+         </rect>
+        </property>
+        <property name="rowCount">
+         <number>6</number>
+        </property>
+        <property name="columnCount">
+         <number>4</number>
+        </property>
+        <attribute name="horizontalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="horizontalHeaderHighlightSections">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <column/>
+        <column/>
+        <column/>
+        <column/>
+       </widget>
+      </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
-        <string>LINE 5</string>
+        <string>LINE OPTIONS</string>
        </attribute>
-      </widget>
-      <widget class="QWidget" name="tab_4">
-       <attribute name="title">
-        <string>LINE 4</string>
-       </attribute>
-       <widget class="QPushButton" name="btn_line_upgrade">
+       <widget class="QPushButton" name="btn_line1Upgrade">
         <property name="geometry">
          <rect>
-          <x>20</x>
+          <x>10</x>
           <y>40</y>
-          <width>141</width>
-          <height>41</height>
+          <width>81</width>
+          <height>31</height>
          </rect>
         </property>
         <property name="text">
-         <string>Upgrade (£1500)</string>
+         <string>Upgrade</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="btn_line4disconn">
+       <widget class="QPushButton" name="btn_line2Upgrade">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>110</y>
-          <width>141</width>
-          <height>41</height>
+          <x>260</x>
+          <y>40</y>
+          <width>81</width>
+          <height>31</height>
          </rect>
         </property>
         <property name="text">
-         <string>Disconnect BusBar A</string>
+         <string>Upgrade</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="btn_line3Upgrade">
         <property name="geometry">
          <rect>
-          <x>180</x>
-          <y>110</y>
-          <width>141</width>
-          <height>41</height>
+          <x>510</x>
+          <y>40</y>
+          <width>81</width>
+          <height>31</height>
          </rect>
         </property>
         <property name="text">
-         <string>Disconnect BusBar B</string>
+         <string>Upgrade</string>
         </property>
        </widget>
-       <widget class="QLCDNumber" name="lcdNumber">
+       <widget class="QPushButton" name="btn_line4Upgrade">
         <property name="geometry">
          <rect>
-          <x>560</x>
-          <y>30</y>
+          <x>10</x>
+          <y>150</y>
+          <width>81</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Upgrade</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btn_line5Upgrade">
+        <property name="geometry">
+         <rect>
+          <x>260</x>
+          <y>160</y>
+          <width>81</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Upgrade</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btn_line6Upgrade">
+        <property name="geometry">
+         <rect>
+          <x>510</x>
+          <y>160</y>
+          <width>81</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Upgrade</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_11">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>63</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Line 1</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_12">
+        <property name="geometry">
+         <rect>
+          <x>260</x>
+          <y>10</y>
+          <width>61</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Line 2</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_13">
+        <property name="geometry">
+         <rect>
+          <x>510</x>
+          <y>10</y>
+          <width>61</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Line 3</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_14">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>120</y>
+          <width>61</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Line 4</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_15">
+        <property name="geometry">
+         <rect>
+          <x>260</x>
+          <y>130</y>
+          <width>61</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Line 5</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_16">
+        <property name="geometry">
+         <rect>
+          <x>520</x>
+          <y>130</y>
+          <width>61</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Line 6</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lbl_line1status">
+        <property name="geometry">
+         <rect>
+          <x>110</x>
+          <y>40</y>
+          <width>101</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Status: Level 0</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lbl_line2status">
+        <property name="geometry">
+         <rect>
+          <x>370</x>
+          <y>40</y>
+          <width>101</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Status: Level 0</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lbl_line3status">
+        <property name="geometry">
+         <rect>
+          <x>630</x>
+          <y>40</y>
+          <width>101</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Status: Level 0</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lbl_line4status">
+        <property name="geometry">
+         <rect>
+          <x>110</x>
+          <y>150</y>
+          <width>101</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Status: Level 0</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lbl_line5status">
+        <property name="geometry">
+         <rect>
+          <x>370</x>
+          <y>160</y>
+          <width>101</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Status: Level 0</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lbl_line6status">
+        <property name="geometry">
+         <rect>
+          <x>620</x>
+          <y>160</y>
+          <width>101</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Status: Level 0</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lbl_line1cost">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>70</y>
           <width>161</width>
-          <height>51</height>
+          <height>20</height>
          </rect>
         </property>
+        <property name="text">
+         <string>Updratde cost: $1000</string>
+        </property>
        </widget>
-       <widget class="QLCDNumber" name="lcdNumber_3">
+       <widget class="QLabel" name="lbl_line2cost">
         <property name="geometry">
          <rect>
-          <x>560</x>
-          <y>170</y>
-          <width>161</width>
-          <height>51</height>
+          <x>350</x>
+          <y>70</y>
+          <width>171</width>
+          <height>20</height>
          </rect>
+        </property>
+        <property name="text">
+         <string>Updrade cost: $1200</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lbl_line3cost">
+        <property name="geometry">
+         <rect>
+          <x>590</x>
+          <y>70</y>
+          <width>171</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Updrade cost: $1400</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lbl_line4cost">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>180</y>
+          <width>171</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Updrate cost: $1700</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lbl_line5cost">
+        <property name="geometry">
+         <rect>
+          <x>340</x>
+          <y>190</y>
+          <width>171</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Updrade cost: $1700</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lbl_line6cost">
+        <property name="geometry">
+         <rect>
+          <x>590</x>
+          <y>190</y>
+          <width>171</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Updrade cost: $2000</string>
         </property>
        </widget>
       </widget>
@@ -1213,7 +1556,7 @@
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>0</x>
         <y>240</y>
         <width>201</width>
         <height>31</height>
@@ -1223,88 +1566,24 @@
        <string>Transmision Line Options</string>
       </property>
      </widget>
-     <widget class="QLCDNumber" name="lcdNumber_2">
+     <widget class="QLCDNumber" name="lcd_Score">
       <property name="geometry">
        <rect>
-        <x>270</x>
-        <y>20</y>
-        <width>161</width>
-        <height>51</height>
+        <x>20</x>
+        <y>30</y>
+        <width>141</width>
+        <height>31</height>
        </rect>
       </property>
      </widget>
-     <widget class="QLCDNumber" name="lcdNumber_4">
+     <widget class="QLCDNumber" name="lcd_total">
       <property name="geometry">
        <rect>
-        <x>1010</x>
-        <y>10</y>
-        <width>161</width>
-        <height>51</height>
+        <x>590</x>
+        <y>80</y>
+        <width>101</width>
+        <height>41</height>
        </rect>
-      </property>
-     </widget>
-     <widget class="QProgressBar" name="progressBar">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>100</y>
-        <width>191</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="value">
-       <number>24</number>
-      </property>
-     </widget>
-     <widget class="QProgressBar" name="progressBar_2">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>140</y>
-        <width>191</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="value">
-       <number>24</number>
-      </property>
-     </widget>
-     <widget class="QProgressBar" name="progressBar_3">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>220</y>
-        <width>191</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="value">
-       <number>24</number>
-      </property>
-     </widget>
-     <widget class="QProgressBar" name="progressBar_4">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>180</y>
-        <width>191</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="value">
-       <number>24</number>
       </property>
      </widget>
      <widget class="QLabel" name="label_2">
@@ -1312,12 +1591,12 @@
        <rect>
         <x>10</x>
         <y>100</y>
-        <width>81</width>
+        <width>101</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>Sun Radiance</string>
+       <string>Solar Useage</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_3">
@@ -1330,7 +1609,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Wind Speed</string>
+       <string>Wind useage</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_4">
@@ -1338,12 +1617,12 @@
        <rect>
         <x>10</x>
         <y>180</y>
-        <width>101</width>
+        <width>121</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>Coal Availability</string>
+       <string>Gas Useage</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_5">
@@ -1351,76 +1630,44 @@
        <rect>
         <x>10</x>
         <y>220</y>
-        <width>121</width>
+        <width>141</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>Nuclear Availability</string>
-      </property>
-     </widget>
-     <widget class="QProgressBar" name="progressBar_5">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>490</x>
-        <y>180</y>
-        <width>191</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="value">
-       <number>24</number>
-      </property>
-     </widget>
-     <widget class="QProgressBar" name="progressBar_6">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>490</x>
-        <y>220</y>
-        <width>191</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="value">
-       <number>24</number>
+       <string>Coal useage</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_6">
       <property name="geometry">
        <rect>
-        <x>360</x>
+        <x>580</x>
         <y>180</y>
         <width>101</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>Cost Scenario</string>
+       <string>Coal Price</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_7">
       <property name="geometry">
        <rect>
-        <x>360</x>
-        <y>220</y>
+        <x>580</x>
+        <y>210</y>
         <width>101</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>Cost Scenario</string>
+       <string>Gas Price</string>
       </property>
      </widget>
      <widget class="QLCDNumber" name="lcdNumber_5">
       <property name="geometry">
        <rect>
-        <x>710</x>
+        <x>460</x>
         <y>100</y>
         <width>71</width>
         <height>21</height>
@@ -1430,8 +1677,18 @@
      <widget class="QLCDNumber" name="lcdNumber_6">
       <property name="geometry">
        <rect>
-        <x>710</x>
+        <x>460</x>
         <y>140</y>
+        <width>71</width>
+        <height>21</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLCDNumber" name="IcdNumber_8">
+      <property name="geometry">
+       <rect>
+        <x>460</x>
+        <y>180</y>
         <width>71</width>
         <height>21</height>
        </rect>
@@ -1440,17 +1697,7 @@
      <widget class="QLCDNumber" name="lcdNumber_7">
       <property name="geometry">
        <rect>
-        <x>710</x>
-        <y>180</y>
-        <width>71</width>
-        <height>21</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLCDNumber" name="lcdNumber_8">
-      <property name="geometry">
-       <rect>
-        <x>710</x>
+        <x>460</x>
         <y>220</y>
         <width>71</width>
         <height>21</height>
@@ -1460,9 +1707,9 @@
      <widget class="QSlider" name="horizontalSlider">
       <property name="geometry">
        <rect>
-        <x>820</x>
+        <x>150</x>
         <y>100</y>
-        <width>281</width>
+        <width>291</width>
         <height>21</height>
        </rect>
       </property>
@@ -1476,7 +1723,7 @@
      <widget class="QSlider" name="horizontalSlider_2">
       <property name="geometry">
        <rect>
-        <x>820</x>
+        <x>150</x>
         <y>140</y>
         <width>281</width>
         <height>21</height>
@@ -1489,8 +1736,8 @@
      <widget class="QSlider" name="horizontalSlider_3">
       <property name="geometry">
        <rect>
-        <x>820</x>
-        <y>180</y>
+        <x>150</x>
+        <y>220</y>
         <width>281</width>
         <height>21</height>
        </rect>
@@ -1502,8 +1749,8 @@
      <widget class="QSlider" name="horizontalSlider_4">
       <property name="geometry">
        <rect>
-        <x>820</x>
-        <y>220</y>
+        <x>150</x>
+        <y>180</y>
         <width>281</width>
         <height>21</height>
        </rect>
@@ -1515,8 +1762,8 @@
      <widget class="QRadioButton" name="radioButton">
       <property name="geometry">
        <rect>
-        <x>680</x>
-        <y>10</y>
+        <x>760</x>
+        <y>30</y>
         <width>181</width>
         <height>21</height>
        </rect>
@@ -1528,8 +1775,8 @@
      <widget class="QRadioButton" name="radioButton_2">
       <property name="geometry">
        <rect>
-        <x>680</x>
-        <y>30</y>
+        <x>780</x>
+        <y>340</y>
         <width>181</width>
         <height>21</height>
        </rect>
@@ -1541,8 +1788,8 @@
      <widget class="QRadioButton" name="radioButton_3">
       <property name="geometry">
        <rect>
-        <x>680</x>
-        <y>50</y>
+        <x>900</x>
+        <y>460</y>
         <width>181</width>
         <height>21</height>
        </rect>
@@ -1554,14 +1801,237 @@
      <widget class="QLabel" name="label_8">
       <property name="geometry">
        <rect>
-        <x>830</x>
-        <y>300</y>
-        <width>191</width>
+        <x>820</x>
+        <y>280</y>
+        <width>201</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>News List - Whats happening</string>
+       <string>News Feed - Whats happening</string>
+      </property>
+     </widget>
+     <widget class="QListWidget" name="listWidget_newsFeed">
+      <property name="geometry">
+       <rect>
+        <x>780</x>
+        <y>310</y>
+        <width>391</width>
+        <height>241</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_17">
+      <property name="geometry">
+       <rect>
+        <x>590</x>
+        <y>60</y>
+        <width>63</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Total:</string>
+      </property>
+     </widget>
+     <widget class="QLCDNumber" name="Icd_coal">
+      <property name="geometry">
+       <rect>
+        <x>930</x>
+        <y>80</y>
+        <width>81</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLCDNumber" name="lcd_wind">
+      <property name="geometry">
+       <rect>
+        <x>830</x>
+        <y>80</y>
+        <width>81</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLCDNumber" name="lcd_solar">
+      <property name="geometry">
+       <rect>
+        <x>720</x>
+        <y>80</y>
+        <width>81</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLCDNumber" name="Icd_gas">
+      <property name="geometry">
+       <rect>
+        <x>1030</x>
+        <y>80</y>
+        <width>81</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_18">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>0</y>
+        <width>81</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Score:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_19">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>0</y>
+        <width>91</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Round/Year:</string>
+      </property>
+     </widget>
+     <widget class="QLCDNumber" name="lcdNumber_13">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>30</y>
+        <width>131</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_sunUse">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>90</y>
+        <width>63</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_windUse">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>130</y>
+        <width>63</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_coalUse">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>210</y>
+        <width>63</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_gasUse_2">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>170</y>
+        <width>63</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+     <widget class="QLCDNumber" name="IcdNumber_9">
+      <property name="geometry">
+       <rect>
+        <x>680</x>
+        <y>180</y>
+        <width>71</width>
+        <height>21</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLCDNumber" name="IcdNumber_10">
+      <property name="geometry">
+       <rect>
+        <x>680</x>
+        <y>210</y>
+        <width>71</width>
+        <height>21</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_20">
+      <property name="geometry">
+       <rect>
+        <x>730</x>
+        <y>60</y>
+        <width>63</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Solar</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_21">
+      <property name="geometry">
+       <rect>
+        <x>830</x>
+        <y>60</y>
+        <width>63</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Wind</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_22">
+      <property name="geometry">
+       <rect>
+        <x>940</x>
+        <y>60</y>
+        <width>63</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Coal</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_23">
+      <property name="geometry">
+       <rect>
+        <x>1040</x>
+        <y>60</y>
+        <width>63</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Gas </string>
       </property>
      </widget>
     </widget>
@@ -1573,7 +2043,7 @@
      <x>0</x>
      <y>0</y>
      <width>1220</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>
@@ -1581,22 +2051,6 @@
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>horizontalSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>progressBar</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>838</x>
-     <y>178</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>273</x>
-     <y>169</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>horizontalSlider</sender>
    <signal>valueChanged(int)</signal>
