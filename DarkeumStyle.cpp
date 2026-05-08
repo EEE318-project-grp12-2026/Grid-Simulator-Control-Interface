@@ -1,6 +1,9 @@
 #include "DarkeumStyle.h"
 
-const QString StyleSheet = R"(
+// String split into two adjacent literals to stay under MSVC's
+// 16380-character-per-literal limit (error C2026).
+const QString StyleSheet =
+    R"(
 
 
 /*Copyright (c) DevSec Studio. All rights reserved.
@@ -598,6 +601,8 @@ QRadioButton::indicator:disabled
 
 }
 
+)"
+    R"(
 
 /*-----QTableView & QTableWidget-----*/
 QTableView
