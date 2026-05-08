@@ -28,7 +28,13 @@ you MUST use the DEBUG port on the NXP the usb peripheral port needed drivers an
 
 ### (unsupported PCs)
 Qt is a cross platform toolkit. only thing is that you need said platform to build the program. 
-You can probably build a release yourself.
+You can probably build a release yourself. (Make your own build file)
 
 ### (unsupported devices):
 devices like smart watches, phones, tablets etc... are NOT supported and cannot be used to run this software. 
+
+
+## BUild Guide:
+download the repo and run the .bat or .sh file. the release and needed libs are in the resulting folder. 
+You NEED to have Qt 6.9.0 build tools present. (NO SCRIPT FOR MAC!)
+
