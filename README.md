@@ -13,7 +13,7 @@ you MUST use the DEBUG port on the NXP the usb peripheral port needed drivers an
 ## Detailed Guides
 
 ### (Windows)
-1. download the WIN_REL_1_0_0.zip file from the releases tab here
+1. download the WIN_REL_1_0_0.zip file from here: https://drive.google.com/file/d/1dAqEIT6xJCiBl2aGFIWUwGef23DyerY0/view?usp=sharing
 2. extract the arhive
 3. run the EXE it contains.
 
